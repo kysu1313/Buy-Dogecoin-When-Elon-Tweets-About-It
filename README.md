@@ -7,8 +7,9 @@ The codes not perfect, or even good, but it does work.
 #Setup:
 1) Clone this repository
 2) To run this bot you need to get your username/email and account number from robinhood. 
-3) `pip install robinhood_stocks`
-   or, Clone this repo https://github.com/jmfernandes/robin_stocks and put it in the root folder, then inside it `pip install .`
+4) Create local environment variables to store your robinhood username and password.
+    -On windows, in the command line use: `set robinhood_username="your robinhood username"`, `set robinhood_password="your robinhood password"`
+3) Clone this repo https://github.com/jmfernandes/robin_stocks and put it in the root folder, then inside it `pip install .`
 4) `pip install python-twitter`
 5) `pip install dotenv`
 6) Create a twitter developer account and then make a new app. From this app collect your keys and secrets and put them in the .env file like below.
