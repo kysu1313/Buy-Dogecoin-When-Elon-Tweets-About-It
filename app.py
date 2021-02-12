@@ -3,6 +3,7 @@ import robin_stocks as rs
 from dotenv import load_dotenv
 import sqlite3
 from sqlite3 import Error
+from datetime import date
 import urllib
 import twitter
 import time
@@ -34,6 +35,7 @@ def user_tweet(thandle, conn):
     for status in statuses:
         isNew = find_in_db(status.text, conn)
         if (isNew):
+            print("New Post: ", status.text)
             insert_post_into_db(status.text, conn)
             for doge in DOGIES:
                 if doge in status.text:
@@ -61,8 +63,8 @@ def find_in_db(status_text, conn):
 def insert_post_into_db(status_text, conn):
     # Insert the given post into the database
 
-    insert_query = '''INSERT INTO posts(post) VALUES(\'{}\');'''.format(
-        str(status_text))
+    insert_query = '''INSERT INTO posts(post, date) VALUES(\'{}\', \'{}\');'''.format(
+        str(status_text), date.today())
     cursor = conn.cursor()
     if conn is not None:
         cursor.execute(insert_query)
@@ -88,7 +90,8 @@ def create_db_table(conn):
     table_query = """
                 CREATE TABLE IF NOT EXISTS posts (
                     id INTEGER PRIMARY KEY,
-                    post BLOB NOT NULL
+                    post BLOB NOT NULL,
+                    date TEXT NOT NULL
                 );
                 """
     cursor = conn.cursor()
@@ -108,7 +111,7 @@ def buy(rs, amt):
     print("Just purchased ", amt, " of dogecoins")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     load_dotenv()
     conn = create_connection(DATABASE_LOCATION)
     create_db_table(conn)
@@ -126,12 +129,16 @@ if __name__ == '__main__':
         "TWITTER_ACCESS_TOKEN"),
         access_token_secret=os.getenv("TWITTER_TOKEN_SECRET"))
     user_dict = rs.account.build_user_profile()
+    loop_count = 0
 
     try:
         while True:
             response = user_tweet("@elonmusk", conn)
             if (response):
                 buy(rs, BUY_AMOUNT)
+                #print("test buy")
+            print("Loop: ", loop_count)
+            loop_count += 1
             time.sleep(15)
 
     except KeyboardInterrupt:
